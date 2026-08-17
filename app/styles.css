@@ -1,0 +1,36 @@
+:root {
+  color-scheme: light;
+  font-family: Inter, "Segoe UI", "Microsoft YaHei UI", system-ui, sans-serif;
+  font-synthesis: none;
+  --ink: #172027;
+  --muted: #75808a;
+  --line: #e4e8eb;
+  --surface: #ffffff;
+  --canvas: #f5f7f8;
+  --accent: #16826d;
+  --accent-dark: #0e6c59;
+  --danger: #b42318;
+}
+
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; }
+body { color: var(--ink); background: var(--canvas); }
+button { font: inherit; letter-spacing: 0; }
+button:focus-visible { outline: 2px solid #268c79; outline-offset: 3px; }
+.launch-body { min-width: 640px; overflow: hidden; user-select: none; }
+.launch-screen { display: flex; width: 100%; height: 100%; flex-direction: column; align-items: center; justify-content: center; padding: 48px; background: var(--canvas); }
+.launch-brand { display: flex; align-items: center; gap: 15px; }
+.launch-mark { display: grid; width: 54px; height: 54px; place-items: center; border-radius: 14px; color: #fff; background: var(--accent); box-shadow: 0 8px 22px rgba(22, 130, 109, 0.18); font-size: 28px; font-weight: 760; }
+.launch-kicker { margin: 0 0 2px; color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: 1.8px; }
+h1 { margin: 0; font-size: 31px; font-weight: 720; letter-spacing: 0; }
+.launch-progress { width: min(360px, 72vw); height: 3px; margin-top: 54px; overflow: hidden; border-radius: 3px; background: #dce5e2; }
+#progress-bar { display: block; width: 38%; height: 100%; border-radius: inherit; background: var(--accent); animation: progress 1.45s ease-in-out infinite; }
+#progress-bar.complete { width: 100%; animation: none; }
+#progress-bar.failed { width: 100%; animation: none; background: #d4746d; }
+.launch-status { margin: 18px 0 0; color: var(--muted); font-size: 13px; }
+.launch-error { width: min(560px, 78vw); margin: 14px 0 0; color: var(--danger); font-size: 12px; line-height: 1.55; text-align: center; white-space: pre-wrap; }
+.retry-button { height: 38px; margin-top: 22px; padding: 0 18px; border: 1px solid #b8d5cd; border-radius: 7px; color: var(--accent-dark); background: var(--surface); cursor: pointer; font-size: 13px; font-weight: 680; }
+.retry-button:hover:not(:disabled) { border-color: var(--accent); background: #f2faf7; }
+.retry-button:disabled { cursor: wait; opacity: 0.6; }
+@keyframes progress { 0% { transform: translateX(-140%); } 50% { transform: translateX(160%); } 100% { transform: translateX(290%); } }
+@media (max-width: 700px) { .launch-body { min-width: 0; } .launch-screen { padding: 28px; } }

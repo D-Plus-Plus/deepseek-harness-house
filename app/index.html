@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'none'"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DeepSeek Harness</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="launch-body">
+    <main class="launch-screen" aria-live="polite">
+      <div class="launch-brand">
+        <div class="launch-mark" aria-hidden="true">D</div>
+        <div>
+          <p class="launch-kicker">DEEPSEEK</p>
+          <h1>Harness</h1>
+        </div>
+      </div>
+      <div class="launch-progress" aria-hidden="true"><span id="progress-bar"></span></div>
+      <p id="launch-status" class="launch-status">正在启动本地工作区</p>
+      <p id="launch-error" class="launch-error" hidden></p>
+      <button id="retry" class="retry-button" type="button" hidden>重新启动</button>
+    </main>
+    <script src="shell.js"></script>
+  </body>
+</html>

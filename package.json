@@ -1,0 +1,83 @@
+{
+  "name": "deepseek-harness-house",
+  "version": "1.1.0",
+  "description": "A desktop GUI shell for the DeepSeek Harness web workspace.",
+  "author": "Harness House Team",
+  "main": "dist/main.js",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "build:harness": "npm --prefix ../deepseek-harness run build:lib && npm --prefix ../deepseek-harness/apps/web run build",
+    "stage:harness": "node scripts/stage-harness.mjs",
+    "smoke:runtime": "node scripts/smoke-runtime.mjs",
+    "smoke:archive": "npm run build && node scripts/smoke-runtime.mjs --archive",
+    "smoke:packaged": "node scripts/smoke-packaged.mjs",
+    "start": "npm run build && electron .",
+    "dev": "npm run start",
+    "test": "tsx --test test/*.test.ts",
+    "pack": "npm run build && npm run build:harness && npm run stage:harness && electron-builder --dir",
+    "dist": "npm run build && npm run build:harness && npm run stage:harness && electron-builder"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "7zip-bin": "^5.2.0",
+    "electron": "^43.4.0",
+    "electron-builder": "^26.15.3",
+    "tsx": "^4.20.6",
+    "typescript": "^7.0.2"
+  },
+  "build": {
+    "appId": "ai.deepseek.harness.house",
+    "productName": "DeepSeek Harness",
+    "icon": "build/icon.png",
+    "asar": true,
+    "electronDist": "node_modules/electron/dist",
+    "files": [
+      "dist/**/*",
+      "app/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": ".harness-runtime.tar.gz",
+        "to": "deepseek-harness.tar.gz"
+      },
+      {
+        "from": ".harness-runtime.links.json",
+        "to": "deepseek-harness.links.json"
+      },
+      {
+        "from": "node_modules/7zip-bin/win/x64/7za.exe",
+        "to": "runtime-tools/7za.exe"
+      },
+      {
+        "from": "node_modules/7zip-bin/LICENSE.txt",
+        "to": "runtime-tools/7zip-bin-LICENSE.txt"
+      }
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "artifactName": "DeepSeek-Harness-Setup-${version}.${ext}",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "dependencies": {
+    "tar": "^7.5.22"
+  }
+}
