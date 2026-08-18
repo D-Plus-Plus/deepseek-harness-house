@@ -63,6 +63,7 @@ function registerAppProtocol(): void {
     ['/index.html', 'index.html'],
     ['/shell.js', 'shell.js'],
     ['/styles.css', 'styles.css'],
+    ['/build-info.json', 'build-info.json'],
   ]);
   protocol.handle(APP_SCHEME, (request) => {
     const requested = new URL(request.url);

@@ -2,6 +2,29 @@ const statusElement = document.querySelector('#launch-status');
 const errorElement = document.querySelector('#launch-error');
 const retryButton = document.querySelector('#retry');
 const progressBar = document.querySelector('#progress-bar');
+const versionElement = document.querySelector('#version-info');
+
+function renderVersion(info) {
+  const appVersion = info?.app?.version ? `壳 v${info.app.version}` : null;
+  const harnessVersion = info?.harness?.packageVersion
+    ? `Harness ${info.harness.packageVersion}`
+    : null;
+  const commit = info?.harness?.gitShortCommit ? `@${info.harness.gitShortCommit}` : null;
+  const dirty = info?.harness?.gitDirty === true ? '（含本地源码改动）' : '';
+  const parts = [appVersion, harnessVersion && `${harnessVersion}${dirty}`, commit].filter(Boolean);
+  if (parts.length > 0) versionElement.textContent = parts.join(' · ');
+  else versionElement.hidden = true;
+}
+
+async function loadVersion() {
+  try {
+    const response = await fetch('build-info.json', { cache: 'no-store' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    renderVersion(await response.json());
+  } catch {
+    versionElement.hidden = true;
+  }
+}
 
 function render(state) {
   const isError = state.phase === 'error';
@@ -27,3 +50,4 @@ window.shellApi.onStateChanged(render);
 window.shellApi.getState().then(render).catch((error) => {
   render({ phase: 'error', error: `无法读取启动状态：${error.message}`, notice: '请重新启动应用。' });
 });
+void loadVersion();

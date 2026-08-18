@@ -1,4 +1,4 @@
-import { readdir, rm } from 'node:fs/promises';
+import { readFile, readdir, rm } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -8,6 +8,7 @@ const playwrightPackage = (await readdir(playwrightStore)).find((name) => name.s
 if (playwrightPackage === undefined) throw new Error('smoke-packaged: Playwright is not installed in deepseek-harness');
 const playwrightEntry = path.join(playwrightStore, playwrightPackage, 'node_modules', 'playwright', 'index.mjs');
 const { _electron: electron } = await import(pathToFileURL(playwrightEntry).toString());
+const buildInfo = JSON.parse(await readFile(path.join(houseRoot, 'app', 'build-info.json'), 'utf8'));
 
 const executablePath = path.join(houseRoot, 'release', 'win-unpacked', 'DeepSeek Harness.exe');
 const userData = path.join(houseRoot, 'artifacts', 'packaged-app-user-data');
@@ -22,6 +23,7 @@ const electronApp = await electron.launch({
   env,
   timeout: 30_000,
 });
+const electronProcess = electronApp.process();
 
 try {
   await electronApp.firstWindow({ timeout: 30_000 });
@@ -31,8 +33,12 @@ try {
     details = await electronApp.evaluate(async ({ app, webContents }) => {
       const contents = webContents.getAllWebContents().find((item) => item.getURL().startsWith('http://127.0.0.1:'));
       if (contents === undefined) return undefined;
+      const shell = webContents.getAllWebContents().find((item) => item.getURL().startsWith('app://shell/'));
+      const versionInfo = shell === undefined
+        ? ''
+        : await shell.executeJavaScript("document.querySelector('#version-info')?.textContent ?? ''");
       const rootChildren = await contents.executeJavaScript("document.querySelector('#root')?.childElementCount ?? 0");
-      return { url: contents.getURL(), title: contents.getTitle(), rootChildren, userData: app.getPath('userData') };
+      return { url: contents.getURL(), title: contents.getTitle(), rootChildren, versionInfo, userData: app.getPath('userData') };
     });
     if (details?.rootChildren > 0) break;
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -40,9 +46,14 @@ try {
   if (details === undefined || details.rootChildren <= 0) {
     throw new Error('smoke-packaged: packaged Harness page did not become ready');
   }
+  const expectedVersion = `壳 v${buildInfo.app.version}`;
+  const expectedHarness = `Harness ${buildInfo.harness.packageVersion}`;
+  if (!details.versionInfo.includes(expectedVersion) || !details.versionInfo.includes(expectedHarness)) {
+    throw new Error(`smoke-packaged: version info mismatch: ${details.versionInfo}`);
+  }
 
   const readyMs = Date.now() - startedAt;
-  const exited = new Promise((resolve) => electronApp.process().once('exit', (code, signal) => resolve({ code, signal })));
+  const exited = new Promise((resolve) => electronProcess.once('exit', (code, signal) => resolve({ code, signal })));
   await electronApp.evaluate(({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.close());
   const exitResult = await Promise.race([
     exited,
@@ -50,5 +61,5 @@ try {
   ]);
   console.log(JSON.stringify({ ...details, readyMs, closeMs: Date.now() - startedAt - readyMs, exitResult }));
 } finally {
-  if (electronApp.process().exitCode === null) await electronApp.close();
+  if (electronProcess.exitCode === null) await electronApp.close();
 }

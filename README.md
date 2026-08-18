@@ -4,6 +4,15 @@
 
 本目录是独立 Git 仓库；`deepseek-harness` 是相邻的 DeepSeek 官方源码仓库，不属于本仓库的提交范围。
 
+## 版本说明
+
+- 桌面壳版本由 `package.json` 的 `version` 字段定义，当前为 `1.1.0`。
+- 引用的 Harness 版本在每次 `npm run build` 或 `npm run stage:harness` 时自动读取相邻源码仓库的 `package.json` 和 Git 提交，写入 `app/build-info.json`。
+- 启动页会显示壳版本、Harness 包版本和 Git 短提交；如果源码仓库存在未提交改动，还会标记“含本地源码改动”。
+- 当前构建基线：Harness `0.1.0-rc.5`，Git 提交 `47f943859bef60e4160492346772ded9b24f765a`（`47f9438`）。
+
+这使安装包可以追溯到明确的 Harness 源码版本，即使目标电脑没有安装或保留 `deepseek-harness` 源码目录。
+
 ## 开发运行
 
 要求 Node.js 22 或更高版本，并先构建 Harness 的 Node 和 Web 产物：

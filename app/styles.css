@@ -28,6 +28,7 @@ h1 { margin: 0; font-size: 31px; font-weight: 720; letter-spacing: 0; }
 #progress-bar.complete { width: 100%; animation: none; }
 #progress-bar.failed { width: 100%; animation: none; background: #d4746d; }
 .launch-status { margin: 18px 0 0; color: var(--muted); font-size: 13px; }
+.version-info { margin: 8px 0 0; color: #8a949b; font-size: 11px; letter-spacing: 0; }
 .launch-error { width: min(560px, 78vw); margin: 14px 0 0; color: var(--danger); font-size: 12px; line-height: 1.55; text-align: center; white-space: pre-wrap; }
 .retry-button { height: 38px; margin-top: 22px; padding: 0 18px; border: 1px solid #b8d5cd; border-radius: 7px; color: var(--accent-dark); background: var(--surface); cursor: pointer; font-size: 13px; font-weight: 680; }
 .retry-button:hover:not(:disabled) { border-color: var(--accent); background: #f2faf7; }

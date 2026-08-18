@@ -2,6 +2,7 @@ node_modules/
 dist/
 release/
 artifacts/
+app/build-info.json
 .harness-runtime/
 .harness-runtime.tar.gz
 .harness-runtime.links.json
