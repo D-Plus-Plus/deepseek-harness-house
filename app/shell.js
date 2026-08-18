@@ -5,13 +5,11 @@ const progressBar = document.querySelector('#progress-bar');
 const versionElement = document.querySelector('#version-info');
 
 function renderVersion(info) {
-  const appVersion = info?.app?.version ? `壳 v${info.app.version}` : null;
+  const appVersion = info?.app?.version ? `v${info.app.version}` : null;
   const harnessVersion = info?.harness?.packageVersion
     ? `Harness ${info.harness.packageVersion}`
     : null;
-  const commit = info?.harness?.gitShortCommit ? `@${info.harness.gitShortCommit}` : null;
-  const dirty = info?.harness?.gitDirty === true ? '（含本地源码改动）' : '';
-  const parts = [appVersion, harnessVersion && `${harnessVersion}${dirty}`, commit].filter(Boolean);
+  const parts = [appVersion, harnessVersion].filter(Boolean);
   if (parts.length > 0) versionElement.textContent = parts.join(' · ');
   else versionElement.hidden = true;
 }

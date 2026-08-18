@@ -46,9 +46,10 @@ try {
   if (details === undefined || details.rootChildren <= 0) {
     throw new Error('smoke-packaged: packaged Harness page did not become ready');
   }
-  const expectedVersion = `壳 v${buildInfo.app.version}`;
+  const expectedVersion = `v${buildInfo.app.version}`;
   const expectedHarness = `Harness ${buildInfo.harness.packageVersion}`;
-  if (!details.versionInfo.includes(expectedVersion) || !details.versionInfo.includes(expectedHarness)) {
+  const expectedVersionInfo = `${expectedVersion} · ${expectedHarness}`;
+  if (details.versionInfo !== expectedVersionInfo) {
     throw new Error(`smoke-packaged: version info mismatch: ${details.versionInfo}`);
   }
 
